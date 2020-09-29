@@ -8,6 +8,8 @@ namespace Multiple_Screens_Monogame
     {
         Texture2D introBackground;
         Texture2D level1Background;
+        Texture2D level2Background;
+
         Texture2D earthTexture;
         Texture2D enterpriseTexture;
         Texture2D enterpriseFront;
@@ -43,6 +45,7 @@ namespace Multiple_Screens_Monogame
             // TODO: use this.Content to load your game content here
             introBackground = Content.Load<Texture2D>("tng_intro");
             level1Background = Content.Load<Texture2D>("space_background");
+            level2Background = Content.Load<Texture2D>("endBackground");
             earthTexture = Content.Load<Texture2D>("earth");
             enterpriseTexture = Content.Load<Texture2D>("enterprise_side_small");
             enterpriseRect = new Rectangle(0, 0, enterpriseTexture.Width, enterpriseTexture.Height);
@@ -86,9 +89,16 @@ namespace Multiple_Screens_Monogame
                 }
                 if (enterpriseSpeed == 0)
                 {
-                    enterpriseRect.Width += 2;
-                    enterpriseRect.Height += 1;
+                    enterpriseRect.Width *= 2;
+                    enterpriseRect.Height *= 2;
                 }
+                if (enterpriseRect.Width > level1Background.Width && level != 2)
+                {
+                    level = 2;
+                    _graphics.PreferredBackBufferWidth = level2Background.Width;  // set this value to the desired width of your window
+                    _graphics.PreferredBackBufferHeight = level2Background.Height;   // set this value to the desired height of your window
+                }
+                    
                
             }
                 
@@ -113,8 +123,17 @@ namespace Multiple_Screens_Monogame
             {
                 _spriteBatch.Begin();
                 _spriteBatch.Draw(level1Background, new Vector2(0, 0), Color.White);
-                _spriteBatch.Draw(enterpriseTexture, enterpriseRect, Color.White);
+                if (enterpriseSpeed != 0)   //Draws ship before planet when moving left
+                    _spriteBatch.Draw(enterpriseTexture, enterpriseRect, Color.White);
                 _spriteBatch.Draw(earthTexture, new Vector2(350, 50), Color.White);
+                if (enterpriseSpeed == 0)   //Draws ship after planet when moving forward
+                    _spriteBatch.Draw(enterpriseTexture, enterpriseRect, Color.White);
+                _spriteBatch.End();
+            }
+            else if (level == 2)
+            {
+                _spriteBatch.Begin();
+                _spriteBatch.Draw(level2Background, new Vector2(0, 0), Color.White);
                 _spriteBatch.End();
             }
 
