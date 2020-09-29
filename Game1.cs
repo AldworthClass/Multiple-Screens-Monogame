@@ -10,9 +10,11 @@ namespace Multiple_Screens_Monogame
         Texture2D level1Background;
         Texture2D earthTexture;
         Texture2D enterpriseTexture;
+        Texture2D enterpriseFront;
         int level;
 
         Vector2 enterpriseLocation;
+        Rectangle enterpriseRect;
         int enterpriseSpeed = -2;
 
         private GraphicsDeviceManager _graphics;
@@ -43,6 +45,9 @@ namespace Multiple_Screens_Monogame
             level1Background = Content.Load<Texture2D>("space_background");
             earthTexture = Content.Load<Texture2D>("earth");
             enterpriseTexture = Content.Load<Texture2D>("enterprise_side_small");
+            enterpriseRect = new Rectangle(0, 0, enterpriseTexture.Width, enterpriseTexture.Height);
+
+            enterpriseFront = Content.Load<Texture2D>("enterprise_front");
 
             _graphics.PreferredBackBufferWidth = introBackground.Width;  // set this value to the desired width of your window
             _graphics.PreferredBackBufferHeight = introBackground.Height;   // set this value to the desired height of your window
@@ -52,21 +57,39 @@ namespace Multiple_Screens_Monogame
 
         protected override void Update(GameTime gameTime)
         {
+            //Depending on the gamestate, as stored in level, we will updat appropriatley
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            // Enter is hit to start the game
+            // Enter is hit to start the game from the main screen
             else if (Keyboard.GetState().IsKeyDown(Keys.Enter) && level == 0)
             {
                 level = 1;
                 _graphics.PreferredBackBufferWidth = level1Background.Width;  // set this value to the desired width of your window
                 _graphics.PreferredBackBufferHeight = level1Background.Height;   // set this value to the desired height of your window
                 _graphics.ApplyChanges();
-                enterpriseLocation = new Vector2(350, 50 + earthTexture.Height / 2);
+                //enterpriseLocation = new Vector2(350, 50 + earthTexture.Height / 2);
+                enterpriseRect.Location = new Point(350, 50 + earthTexture.Height / 2);
             }
 
             if (level == 1)
             {
-                enterpriseLocation.X += enterpriseSpeed;
+
+                enterpriseRect.X += enterpriseSpeed;
+                if (enterpriseRect.X == 0)
+                {
+                    enterpriseSpeed = 0;
+                    enterpriseRect.X = 1;
+                    enterpriseRect.Width = enterpriseTexture.Width;
+                    enterpriseRect.Height = enterpriseTexture.Height;
+                    enterpriseTexture = enterpriseFront;
+                }
+                if (enterpriseSpeed == 0)
+                {
+                    enterpriseRect.Width += 2;
+                    enterpriseRect.Height += 1;
+                }
+               
             }
                 
 
@@ -90,7 +113,7 @@ namespace Multiple_Screens_Monogame
             {
                 _spriteBatch.Begin();
                 _spriteBatch.Draw(level1Background, new Vector2(0, 0), Color.White);
-                _spriteBatch.Draw(enterpriseTexture, enterpriseLocation, Color.White);
+                _spriteBatch.Draw(enterpriseTexture, enterpriseRect, Color.White);
                 _spriteBatch.Draw(earthTexture, new Vector2(350, 50), Color.White);
                 _spriteBatch.End();
             }
