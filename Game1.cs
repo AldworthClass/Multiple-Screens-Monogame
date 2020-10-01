@@ -13,6 +13,9 @@ namespace Multiple_Screens_Monogame
         Texture2D earthTexture;
         Texture2D enterpriseTexture;
         Texture2D enterpriseFront;
+
+        SpriteFont regularFont;
+        Color textColor;
         int level;
 
         Vector2 enterpriseLocation;
@@ -40,6 +43,7 @@ namespace Multiple_Screens_Monogame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            textColor = Color.White;
             level = 0;
 
             // TODO: use this.Content to load your game content here
@@ -97,6 +101,7 @@ namespace Multiple_Screens_Monogame
                     level = 2;
                     _graphics.PreferredBackBufferWidth = level2Background.Width;  // set this value to the desired width of your window
                     _graphics.PreferredBackBufferHeight = level2Background.Height;   // set this value to the desired height of your window
+                    _graphics.ApplyChanges();
                 }
                     
                
