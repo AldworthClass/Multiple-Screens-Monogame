@@ -21,6 +21,9 @@ namespace Multiple_Screens_Monogame
         Vector2 enterpriseLocation;
         Rectangle enterpriseRect;
         int enterpriseSpeed = -2;
+        int frameCount = 0;
+        double enterpriseWidth;
+        double enterpriseHeight;
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -45,6 +48,7 @@ namespace Multiple_Screens_Monogame
 
             textColor = Color.White;
             level = 0;
+            
 
             // TODO: use this.Content to load your game content here
             introBackground = Content.Load<Texture2D>("tng_intro");
@@ -55,6 +59,9 @@ namespace Multiple_Screens_Monogame
             enterpriseRect = new Rectangle(0, 0, enterpriseTexture.Width, enterpriseTexture.Height);
 
             enterpriseFront = Content.Load<Texture2D>("enterprise_front");
+            enterpriseWidth = enterpriseFront.Width;
+            enterpriseHeight = enterpriseFront.Height;
+
 
             _graphics.PreferredBackBufferWidth = introBackground.Width;  // set this value to the desired width of your window
             _graphics.PreferredBackBufferHeight = introBackground.Height;   // set this value to the desired height of your window
@@ -93,8 +100,14 @@ namespace Multiple_Screens_Monogame
                 }
                 if (enterpriseSpeed == 0)
                 {
-                    enterpriseRect.Width *= 2;
-                    enterpriseRect.Height *= 2;
+
+                    enterpriseWidth *= 1.01;
+                    enterpriseHeight *= 1.01;
+
+                    enterpriseRect.Width = (int)enterpriseWidth;
+                    enterpriseRect.Height = (int)enterpriseHeight;
+                 
+                    
                 }
                 if (enterpriseRect.Width > level1Background.Width && level != 2)
                 {
