@@ -15,6 +15,8 @@ namespace Multiple_Screens_Monogame
         Texture2D enterpriseFront;
 
         SpriteFont regularFont;
+        SpriteFont introFont;
+        SpriteFont enfFont;
         Color textColor;
         int level;
 
@@ -48,6 +50,9 @@ namespace Multiple_Screens_Monogame
 
             // TODO: use this.Content to load your game content here
             introBackground = Content.Load<Texture2D>("tng_intro");
+            introFont = Content.Load<SpriteFont>("IntroInstructions");
+            enfFont = Content.Load<SpriteFont>("EndScreenFont");
+
             level1Background = Content.Load<Texture2D>("space_background");
             level2Background = Content.Load<Texture2D>("endBackground");
             earthTexture = Content.Load<Texture2D>("earth");
@@ -55,6 +60,7 @@ namespace Multiple_Screens_Monogame
             enterpriseRect = new Rectangle(0, 0, enterpriseTexture.Width, enterpriseTexture.Height);
 
             enterpriseFront = Content.Load<Texture2D>("enterprise_front");
+
 
             _graphics.PreferredBackBufferWidth = introBackground.Width;  // set this value to the desired width of your window
             _graphics.PreferredBackBufferHeight = introBackground.Height;   // set this value to the desired height of your window
@@ -122,6 +128,7 @@ namespace Multiple_Screens_Monogame
             {
                 _spriteBatch.Begin();
                 _spriteBatch.Draw(introBackground, new Vector2(0, 0), Color.White);
+                _spriteBatch.DrawString(introFont, "Hit Enter to Continue", new Vector2(0, 0), Color.White);
                 _spriteBatch.End();
             }
             else if (level == 1)
