@@ -118,8 +118,8 @@ namespace Multiple_Screens_Monogame
                 if (enterpriseRect.Width > level1Background.Width && level != 2)
                 {
                     level = 2;
-                    _graphics.PreferredBackBufferWidth = level2Background.Width;  // set this value to the desired width of your window
-                    _graphics.PreferredBackBufferHeight = level2Background.Height;   // set this value to the desired height of your window
+                    _graphics.PreferredBackBufferWidth = level2Background.Width;        // set this value to the desired width of your window
+                    _graphics.PreferredBackBufferHeight = level2Background.Height;      // set this value to the desired height of your window
                     _graphics.ApplyChanges();
                 }
                     
