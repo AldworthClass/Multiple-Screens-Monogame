@@ -19,6 +19,7 @@ namespace Multiple_Screens_Monogame
         SpriteFont enfFont;
         Color textColor;
         int level;
+        int gameCount;
 
         Vector2 enterpriseLocation;
         Rectangle enterpriseRect;
@@ -50,6 +51,7 @@ namespace Multiple_Screens_Monogame
 
             textColor = Color.White;
             level = 0;
+            gameCount = 0;
             
 
             // TODO: use this.Content to load your game content here
@@ -64,8 +66,8 @@ namespace Multiple_Screens_Monogame
             enterpriseRect = new Rectangle(0, 0, enterpriseTexture.Width, enterpriseTexture.Height);
 
             enterpriseFront = Content.Load<Texture2D>("enterprise_front");
-            enterpriseWidth = enterpriseFront.Width;
-            enterpriseHeight = enterpriseFront.Height;
+            enterpriseWidth = enterpriseTexture.Width;
+            enterpriseHeight = enterpriseTexture.Height;
 
 
 
@@ -106,14 +108,12 @@ namespace Multiple_Screens_Monogame
                 }
                 if (enterpriseSpeed == 0)
                 {
-
-                    enterpriseWidth *= 1.01;
-                    enterpriseHeight *= 1.01;
+                    enterpriseWidth *= 1.1;
+                    enterpriseHeight *= 1.1;
 
                     enterpriseRect.Width = (int)enterpriseWidth;
                     enterpriseRect.Height = (int)enterpriseHeight;
-                 
-                    
+
                 }
                 if (enterpriseRect.Width > level1Background.Width && level != 2)
                 {
