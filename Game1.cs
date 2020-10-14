@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -20,6 +21,21 @@ namespace Multiple_Screens_Monogame
         Color textColor;
         int level;
         int gameCount;
+        bool start;
+
+        //Sounds
+        SoundEffect introTheme;
+        SoundEffectInstance introThemeInstance;
+
+        SoundEffect engine;
+        SoundEffectInstance engineInstance;
+
+        SoundEffect warp;
+        SoundEffectInstance warpInstance;
+
+        SoundEffect endTheme;
+        SoundEffectInstance endThemeInstance;
+
 
         Vector2 enterpriseLocation;
         Rectangle enterpriseRect;
@@ -52,7 +68,22 @@ namespace Multiple_Screens_Monogame
             textColor = Color.White;
             level = 0;
             gameCount = 0;
-            
+            start = true;
+
+            //Sounds
+            introTheme = Content.Load<SoundEffect>("The Next Generation Main Title");
+            introThemeInstance = introTheme.CreateInstance();
+            introThemeInstance.IsLooped = false;
+
+            engine = Content.Load<SoundEffect>("engine");
+            engineInstance = engine.CreateInstance();
+
+            warp = Content.Load<SoundEffect>("warp");
+            warpInstance = warp.CreateInstance();
+
+            endTheme = Content.Load<SoundEffect>("Endtng");
+            endThemeInstance = endTheme.CreateInstance();
+
 
             // TODO: use this.Content to load your game content here
             introBackground = Content.Load<Texture2D>("tng_intro");
@@ -80,12 +111,19 @@ namespace Multiple_Screens_Monogame
         protected override void Update(GameTime gameTime)
         {
             //Depending on the gamestate, as stored in level, we will updat appropriatley
-
+            if (level == 0 && start == true)
+            {
+                start = false;
+                introThemeInstance.Play();
+            }
+            
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             // Enter is hit to start the game from the main screen
-            else if (Keyboard.GetState().IsKeyDown(Keys.Enter) && level == 0)
+            else if (Keyboard.GetState().IsKeyDown(Keys.Enter) && level == 0 || introThemeInstance.State == SoundState.Stopped && level == 0)
             {
+                introThemeInstance.Stop();
+                engineInstance.Play();
                 level = 1;
                 _graphics.PreferredBackBufferWidth = level1Background.Width;  // set this value to the desired width of your window
                 _graphics.PreferredBackBufferHeight = level1Background.Height;   // set this value to the desired height of your window
@@ -98,8 +136,9 @@ namespace Multiple_Screens_Monogame
             {
 
                 enterpriseRect.X += enterpriseSpeed;
-                if (enterpriseRect.X == 0)
+                if (enterpriseRect.X < 0)
                 {
+                    engineInstance.Stop();
                     enterpriseSpeed = 0;
                     enterpriseRect.X = 1;
                     enterpriseRect.Width = enterpriseTexture.Width;
@@ -108,8 +147,9 @@ namespace Multiple_Screens_Monogame
                 }
                 if (enterpriseSpeed == 0)
                 {
-                    enterpriseWidth *= 1.1;
-                    enterpriseHeight *= 1.1;
+                    warpInstance.Play();
+                    enterpriseWidth *= 1.01;
+                    enterpriseHeight *= 1.01;
 
                     enterpriseRect.Width = (int)enterpriseWidth;
                     enterpriseRect.Height = (int)enterpriseHeight;
@@ -117,6 +157,8 @@ namespace Multiple_Screens_Monogame
                 }
                 if (enterpriseRect.Width > level1Background.Width && level != 2)
                 {
+                    warpInstance.Stop();
+                    endThemeInstance.Play();
                     level = 2;
                     _graphics.PreferredBackBufferWidth = level2Background.Width;        // set this value to the desired width of your window
                     _graphics.PreferredBackBufferHeight = level2Background.Height;      // set this value to the desired height of your window
@@ -141,7 +183,7 @@ namespace Multiple_Screens_Monogame
             {
                 _spriteBatch.Begin();
                 _spriteBatch.Draw(introBackground, new Vector2(0, 0), Color.White);
-                _spriteBatch.DrawString(introFont, "Hit Enter to Continue", new Vector2(0, 0), Color.White);
+                _spriteBatch.DrawString(introFont, "Hit Enter to continue" , new Vector2(0, 0), Color.White);
                 _spriteBatch.End();
             }
             else if (level == 1)

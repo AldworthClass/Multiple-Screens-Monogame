@@ -44,6 +44,18 @@
 /processorParam:TextureFormat=Compressed
 /build:EndScreenFont.spritefont
 
+#begin Endtng.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Endtng.mp3
+
+#begin engine.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:engine.wav
+
 #begin enterprise_front.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -87,6 +99,12 @@
 /processorParam:TextureFormat=Color
 /build:space_background.png
 
+#begin The Next Generation Main Title.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:The Next Generation Main Title.mp3
+
 #begin tng_intro.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -98,4 +116,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:tng_intro.png
+
+#begin tngMainShort.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:tngMainShort.wav
+
+#begin warp.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:warp.mp3
 
