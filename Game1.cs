@@ -7,20 +7,40 @@ namespace Multiple_Screens_Monogame
 {
     public class Game1 : Game
     {
+
+        
+
+        //Background Textures
         Texture2D introBackground;
         Texture2D level1Background;
         Texture2D level2Background;
 
-        Texture2D earthTexture;
-        Texture2D enterpriseTexture;
-        Texture2D enterpriseFront;
 
+        //Items
+        Texture2D earthTexture;
+        Texture2D asteroidTexture;
+        Rectangle asteroidRectangle;
+
+
+        Texture2D moonTexture;
+        Rectangle moonRect;
+
+        Texture2D enterpriseTexture;
+        Texture2D enterpriseExplode;
+        Texture2D enterpriseFront;
+        Rectangle enterpriseRect;
+
+
+
+        //Fonts
         SpriteFont regularFont;
         SpriteFont introFont;
         SpriteFont enfFont;
+        
+        
         Color textColor;
+
         int level;
-        int gameCount;
         bool start;
 
         //Sounds
@@ -36,11 +56,14 @@ namespace Multiple_Screens_Monogame
         SoundEffect endTheme;
         SoundEffectInstance endThemeInstance;
 
+        SoundEffect explosion;
 
-        Vector2 enterpriseLocation;
-        Rectangle enterpriseRect;
+
+
+
         int enterpriseSpeed = -2;
-        int frameCount = 0;
+        int asteroidSpeed = 3;
+
         double enterpriseWidth;
         double enterpriseHeight;
 
@@ -57,18 +80,25 @@ namespace Multiple_Screens_Monogame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            textColor = Color.White;
+            level = 0;        
+            start = true;
+
+
 
             base.Initialize();
+
+
+
+            
+
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            textColor = Color.White;
-            level = 0;
-            gameCount = 0;
-            start = true;
+            
 
             //Sounds
             introTheme = Content.Load<SoundEffect>("The Next Generation Main Title");
@@ -84,6 +114,9 @@ namespace Multiple_Screens_Monogame
             endTheme = Content.Load<SoundEffect>("Endtng");
             endThemeInstance = endTheme.CreateInstance();
 
+            explosion = Content.Load<SoundEffect>("explosion");
+            
+
 
             // TODO: use this.Content to load your game content here
             introBackground = Content.Load<Texture2D>("tng_intro");
@@ -93,8 +126,16 @@ namespace Multiple_Screens_Monogame
             level1Background = Content.Load<Texture2D>("space_background");
             level2Background = Content.Load<Texture2D>("endBackground");
             earthTexture = Content.Load<Texture2D>("earth");
+            moonTexture = Content.Load<Texture2D>("moon");
+            moonRect = new Rectangle(600, 200, 100, 100);
+
+            asteroidTexture = Content.Load<Texture2D>("asteroid");
+            asteroidRectangle = new Rectangle(500, 500, 75, 75);
+
             enterpriseTexture = Content.Load<Texture2D>("enterprise_side_small");
             enterpriseRect = new Rectangle(0, 0, enterpriseTexture.Width, enterpriseTexture.Height);
+            enterpriseExplode = Content.Load<Texture2D>("enterpriseExplosion");
+
 
             enterpriseFront = Content.Load<Texture2D>("enterprise_front");
             enterpriseWidth = enterpriseTexture.Width;
@@ -134,8 +175,31 @@ namespace Multiple_Screens_Monogame
 
             if (level == 1)
             {
+                if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                    asteroidRectangle.X -= asteroidSpeed;
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                    asteroidRectangle.X += asteroidSpeed;
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                    asteroidRectangle.Y -= asteroidSpeed;
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                    asteroidRectangle.Y += asteroidSpeed;
 
                 enterpriseRect.X += enterpriseSpeed;
+                
+                if (enterpriseRect.Intersects(asteroidRectangle))//If
+                {
+                    level = 3;
+                    _graphics.PreferredBackBufferWidth = enterpriseExplode.Width;
+                    _graphics.PreferredBackBufferHeight = enterpriseExplode.Height;
+                    engineInstance.Stop();
+                    explosion.Play();
+
+                }
+
+
                 if (enterpriseRect.X < 0)
                 {
                     engineInstance.Stop();
@@ -192,7 +256,12 @@ namespace Multiple_Screens_Monogame
                 _spriteBatch.Draw(level1Background, new Vector2(0, 0), Color.White);
                 if (enterpriseSpeed != 0)   //Draws ship before planet when moving left
                     _spriteBatch.Draw(enterpriseTexture, enterpriseRect, Color.White);
+
+
                 _spriteBatch.Draw(earthTexture, new Vector2(350, 50), Color.White);
+                _spriteBatch.Draw(moonTexture, moonRect, Color.White);
+                _spriteBatch.Draw(asteroidTexture, asteroidRectangle, Color.White);
+
                 if (enterpriseSpeed == 0)   //Draws ship after planet when moving forward
                     _spriteBatch.Draw(enterpriseTexture, enterpriseRect, Color.White);
                 _spriteBatch.End();
@@ -201,6 +270,12 @@ namespace Multiple_Screens_Monogame
             {
                 _spriteBatch.Begin();
                 _spriteBatch.Draw(level2Background, new Vector2(0, 0), Color.White);
+                _spriteBatch.End();
+            }
+            else if (level == 3)
+            {
+                _spriteBatch.Begin();
+                _spriteBatch.Draw(enterpriseExplode, new Vector2(0, 0), Color.White);
                 _spriteBatch.End();
             }
 
