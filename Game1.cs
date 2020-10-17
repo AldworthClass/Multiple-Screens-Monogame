@@ -57,6 +57,7 @@ namespace Multiple_Screens_Monogame
         SoundEffectInstance endThemeInstance;
 
         SoundEffect explosion;
+        SoundEffectInstance explosionInstance;
 
 
 
@@ -115,6 +116,7 @@ namespace Multiple_Screens_Monogame
             endThemeInstance = endTheme.CreateInstance();
 
             explosion = Content.Load<SoundEffect>("explosion");
+            explosionInstance = explosion.CreateInstance();
             
 
 
@@ -189,11 +191,12 @@ namespace Multiple_Screens_Monogame
 
                 enterpriseRect.X += enterpriseSpeed;
                 
-                if (enterpriseRect.Intersects(asteroidRectangle))//If
+                if (enterpriseRect.Intersects(asteroidRectangle) && enterpriseSpeed != 0)// If the ship is moving to the side
                 {
                     level = 3;
                     _graphics.PreferredBackBufferWidth = enterpriseExplode.Width;
                     _graphics.PreferredBackBufferHeight = enterpriseExplode.Height;
+                    _graphics.ApplyChanges();
                     engineInstance.Stop();
                     explosion.Play();
 
@@ -230,6 +233,11 @@ namespace Multiple_Screens_Monogame
                 }
                     
                
+            }
+            else if (level == 3)
+            {
+                if (explosionInstance.State == SoundState.Stopped)
+                    Exit();
             }
                 
 
