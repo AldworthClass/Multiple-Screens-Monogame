@@ -7,28 +7,29 @@ namespace Multiple_Screens_Monogame
 {
     public class Game1 : Game
     {
+        // Monogame essentials
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
 
-        
-
-        //Background Textures
+        // Background Textures
         Texture2D introBackground;
         Texture2D level1Background;
         Texture2D level2Background;
 
-
-        //Items
-        Texture2D earthTexture;
-        Texture2D asteroidTexture;
-        Rectangle asteroidRectangle;
-
-
-        Texture2D moonTexture;
-        Rectangle moonRect;
-
+        // Ship Textures
         Texture2D enterpriseTexture;
         Texture2D enterpriseExplode;
         Texture2D enterpriseFront;
         Rectangle enterpriseRect;
+
+        // Item Textures
+        Texture2D earthTexture;
+        Texture2D asteroidTexture;
+        Rectangle asteroidRectangle;
+        Texture2D moonTexture;
+        Rectangle moonRect;
+
+        
 
 
 
@@ -36,12 +37,6 @@ namespace Multiple_Screens_Monogame
         SpriteFont regularFont;
         SpriteFont introFont;
         SpriteFont enfFont;
-        
-        
-        Color textColor;
-
-        int level;
-        bool start;
 
         //Sounds
         SoundEffect introTheme;
@@ -59,8 +54,10 @@ namespace Multiple_Screens_Monogame
         SoundEffect explosion;
         SoundEffectInstance explosionInstance;
 
+        Color textColor;
 
-
+        int level;
+        bool start;
 
         int enterpriseSpeed = -2;
         int asteroidSpeed = 3;
@@ -68,8 +65,7 @@ namespace Multiple_Screens_Monogame
         double enterpriseWidth;
         double enterpriseHeight;
 
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+       
 
         public Game1()
         {
