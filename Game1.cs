@@ -29,14 +29,9 @@ namespace Multiple_Screens_Monogame
         Texture2D moonTexture;
         Rectangle moonRect;
 
-        
-
-
-
         //Fonts
-        SpriteFont regularFont;
         SpriteFont introFont;
-        SpriteFont enfFont;
+        SpriteFont endFont;
 
         //Sounds
         SoundEffect introTheme;
@@ -54,18 +49,14 @@ namespace Multiple_Screens_Monogame
         SoundEffect explosion;
         SoundEffectInstance explosionInstance;
 
-        Color textColor;
-
         int level;
         bool start;
 
-        int enterpriseSpeed = -2;
-        int asteroidSpeed = 3;
+        int enterpriseSpeed;
+        int asteroidSpeed;
 
         double enterpriseWidth;
         double enterpriseHeight;
-
-       
 
         public Game1()
         {
@@ -77,17 +68,19 @@ namespace Multiple_Screens_Monogame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            textColor = Color.White;
+
+            // Set initial values
             level = 0;        
             start = true;
-
-
+            enterpriseSpeed = -2;
+            asteroidSpeed = 3;
 
             base.Initialize();
 
-
-
-            
+            // Initial values that are dependent on content being loaded can be done here
+            _graphics.PreferredBackBufferWidth = introBackground.Width;     // Game window is the size of background texture
+            _graphics.PreferredBackBufferHeight = introBackground.Height;  
+            _graphics.ApplyChanges();
 
         }
 
@@ -95,31 +88,10 @@ namespace Multiple_Screens_Monogame
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            
-
-            //Sounds
-            introTheme = Content.Load<SoundEffect>("The Next Generation Main Title");
-            introThemeInstance = introTheme.CreateInstance();
-            introThemeInstance.IsLooped = false;
-
-            engine = Content.Load<SoundEffect>("engine");
-            engineInstance = engine.CreateInstance();
-
-            warp = Content.Load<SoundEffect>("warp");
-            warpInstance = warp.CreateInstance();
-
-            endTheme = Content.Load<SoundEffect>("Endtng");
-            endThemeInstance = endTheme.CreateInstance();
-
-            explosion = Content.Load<SoundEffect>("explosion");
-            explosionInstance = explosion.CreateInstance();
-            
-
-
-            // TODO: use this.Content to load your game content here
+            // Load Textures
             introBackground = Content.Load<Texture2D>("tng_intro");
             introFont = Content.Load<SpriteFont>("IntroInstructions");
-            enfFont = Content.Load<SpriteFont>("EndScreenFont");
+            endFont = Content.Load<SpriteFont>("EndScreenFont");
 
             level1Background = Content.Load<Texture2D>("space_background");
             level2Background = Content.Load<Texture2D>("endBackground");
@@ -139,11 +111,29 @@ namespace Multiple_Screens_Monogame
             enterpriseWidth = enterpriseTexture.Width;
             enterpriseHeight = enterpriseTexture.Height;
 
+            // Load Sounds
+            introTheme = Content.Load<SoundEffect>("The Next Generation Main Title");
+            introThemeInstance = introTheme.CreateInstance();
+            introThemeInstance.IsLooped = false;
+
+            engine = Content.Load<SoundEffect>("engine");
+            engineInstance = engine.CreateInstance();
+
+            warp = Content.Load<SoundEffect>("warp");
+            warpInstance = warp.CreateInstance();
+
+            endTheme = Content.Load<SoundEffect>("Endtng");
+            endThemeInstance = endTheme.CreateInstance();
+
+            explosion = Content.Load<SoundEffect>("explosion");
+            explosionInstance = explosion.CreateInstance();
+            explosionInstance.IsLooped = false;
+            
+            
 
 
-            _graphics.PreferredBackBufferWidth = introBackground.Width;  // set this value to the desired width of your window
-            _graphics.PreferredBackBufferHeight = introBackground.Height;   // set this value to the desired height of your window
-            _graphics.ApplyChanges();
+
+       
 
         }
 
@@ -173,6 +163,8 @@ namespace Multiple_Screens_Monogame
 
             if (level == 1)
             {
+
+                // Moves asteroid
                 if (Keyboard.GetState().IsKeyDown(Keys.Left))
                     asteroidRectangle.X -= asteroidSpeed;
 
@@ -186,20 +178,18 @@ namespace Multiple_Screens_Monogame
                     asteroidRectangle.Y += asteroidSpeed;
 
                 enterpriseRect.X += enterpriseSpeed;
-                
-                if (enterpriseRect.Intersects(asteroidRectangle) && enterpriseSpeed != 0)// If the ship is moving to the side
-                {
-                    level = 3;
+
+                if (enterpriseRect.Intersects(asteroidRectangle) && enterpriseSpeed != 0 && level == 1) // If the ship is moving to the side it can be hit by the asteroid and can be hit, detects a collision
+                { 
+                    level = 3;  
                     _graphics.PreferredBackBufferWidth = enterpriseExplode.Width;
                     _graphics.PreferredBackBufferHeight = enterpriseExplode.Height;
                     _graphics.ApplyChanges();
                     engineInstance.Stop();
-                    explosion.Play();
-
+                    explosionInstance.Play();
                 }
 
-
-                if (enterpriseRect.X < 0)
+                if (enterpriseRect.X < 0)   // Detects when the Enterprise is able to go to warp
                 {
                     engineInstance.Stop();
                     enterpriseSpeed = 0;
@@ -208,7 +198,8 @@ namespace Multiple_Screens_Monogame
                     enterpriseRect.Height = enterpriseTexture.Height;
                     enterpriseTexture = enterpriseFront;
                 }
-                if (enterpriseSpeed == 0)
+
+                if (enterpriseSpeed == 0)   // Detects when the enterprise is at warp
                 {
                     warpInstance.Play();
                     enterpriseWidth *= 1.01;
@@ -218,6 +209,7 @@ namespace Multiple_Screens_Monogame
                     enterpriseRect.Height = (int)enterpriseHeight;
 
                 }
+
                 if (enterpriseRect.Width > level1Background.Width && level != 2)
                 {
                     warpInstance.Stop();
@@ -230,10 +222,11 @@ namespace Multiple_Screens_Monogame
                     
                
             }
-            else if (level == 3)
+            else if (level == 3)    // Enterprise destroyed ending
             {
-                if (explosionInstance.State == SoundState.Stopped)
+                if (explosionInstance.State == SoundState.Stopped && Keyboard.GetState().IsKeyDown(Keys.Enter))
                     Exit();
+                    
             }
                 
 
@@ -247,20 +240,20 @@ namespace Multiple_Screens_Monogame
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            if (level == 0)
+            if (level == 0) // Intro screen
             {
                 _spriteBatch.Begin();
                 _spriteBatch.Draw(introBackground, new Vector2(0, 0), Color.White);
                 _spriteBatch.DrawString(introFont, "Hit Enter to continue" , new Vector2(0, 0), Color.White);
                 _spriteBatch.End();
             }
-            else if (level == 1)
+            else if (level == 1)    // Main game screen
             {
                 _spriteBatch.Begin();
                 _spriteBatch.Draw(level1Background, new Vector2(0, 0), Color.White);
+
                 if (enterpriseSpeed != 0)   //Draws ship before planet when moving left
                     _spriteBatch.Draw(enterpriseTexture, enterpriseRect, Color.White);
-
 
                 _spriteBatch.Draw(earthTexture, new Vector2(350, 50), Color.White);
                 _spriteBatch.Draw(moonTexture, moonRect, Color.White);
@@ -268,21 +261,25 @@ namespace Multiple_Screens_Monogame
 
                 if (enterpriseSpeed == 0)   //Draws ship after planet when moving forward
                     _spriteBatch.Draw(enterpriseTexture, enterpriseRect, Color.White);
+
                 _spriteBatch.End();
             }
-            else if (level == 2)
+            else if (level == 2)    // End credits when enterprise escapes 
             {
                 _spriteBatch.Begin();
                 _spriteBatch.Draw(level2Background, new Vector2(0, 0), Color.White);
                 _spriteBatch.End();
             }
-            else if (level == 3)
+            else if (level == 3)    //End credits when enterprise is destroyed
             {
                 _spriteBatch.Begin();
                 _spriteBatch.Draw(enterpriseExplode, new Vector2(0, 0), Color.White);
+
+                if (explosionInstance.State == SoundState.Stopped)  // Text displayed after explosion sound is finished
+                    _spriteBatch.DrawString(endFont, "You destroyed the Federation, hit ENTER to mourn.", new Vector2(10, _graphics.PreferredBackBufferHeight / 2), Color.White); 
+
                 _spriteBatch.End();
             }
-
 
             base.Draw(gameTime);
         }
