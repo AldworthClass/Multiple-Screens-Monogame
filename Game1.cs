@@ -49,6 +49,8 @@ namespace Multiple_Screens_Monogame
         SoundEffect explosion;
         SoundEffectInstance explosionInstance;
 
+        Vector2 creditTextVector;
+
         int level;
         bool start;
 
@@ -127,13 +129,7 @@ namespace Multiple_Screens_Monogame
 
             explosion = Content.Load<SoundEffect>("explosion");
             explosionInstance = explosion.CreateInstance();
-            explosionInstance.IsLooped = false;
-            
-            
-
-
-
-       
+            explosionInstance.IsLooped = false;    
 
         }
 
@@ -218,9 +214,14 @@ namespace Multiple_Screens_Monogame
                     _graphics.PreferredBackBufferWidth = level2Background.Width;        // set this value to the desired width of your window
                     _graphics.PreferredBackBufferHeight = level2Background.Height;      // set this value to the desired height of your window
                     _graphics.ApplyChanges();
+                    creditTextVector = new Vector2(_graphics.PreferredBackBufferWidth / 2 - 200, -20);
                 }
                     
                
+            }
+            else if (level == 2) // Enterprise Escape Ending
+            {
+                creditTextVector.Y += 3;
             }
             else if (level == 3)    // Enterprise destroyed ending
             {
@@ -268,6 +269,8 @@ namespace Multiple_Screens_Monogame
             {
                 _spriteBatch.Begin();
                 _spriteBatch.Draw(level2Background, new Vector2(0, 0), Color.White);
+                _spriteBatch.DrawString(introFont, "May the force be with you!", creditTextVector, Color.White);
+                _spriteBatch.DrawString(introFont, "Hit Escape to quit.", new Vector2(10, 10), Color.White);
                 _spriteBatch.End();
             }
             else if (level == 3)    //End credits when enterprise is destroyed
